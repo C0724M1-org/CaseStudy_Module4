@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách học sinh</title>
+<th:block th:replace="~{common::library}"></th:block>
+</head>
+<body>
+<div th:replace="~{common::header}"></div>
+<div class="container">
+    <button class="btn btn-primary" onclick="window.location.href='/student/create'">Thêm mới</button>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>STT</th>
+            <th>Tên</th>
+            <th>Địa chỉ</th>
+            <th>Điểm</th>
+            <th>Lớp</th>
+            <th colspan="2">Chức năng</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="student, temp : ${students}">
+            <td th:text="${temp.count}"></td>
+            <td th:text="${student.name}"></td>
+            <td th:text="${student.address}"></td>
+            <td th:text="${student.point}"></td>
+            <td th:text="${student.idClass}"></td>
+            <td>
+                <button class="btn btn-warning">Sửa</button>
+            </td>
+            <td>
+                <button class="btn btn-danger" data-bs-toggle="modal" th:attr="data-bs-target='#modalDelete' + ${student.code}">
+                    Xóa
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Modal Delete -->
+    <div th:each="student : ${students}">
+        <div class="modal fade" th:id="'modalDelete' + ${student.code}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Xóa học sinh</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p th:text="'Bạn có chắc muốn xóa học sinh có tên là ' + ${student.name} + ' và id là ' + ${student.code} + '?'" ></p>
+                        <small style="color: red; font-style: italic">Lưu ý hành động này không thể hoàn tác!</small>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <a th:href="@{/student/{id}/delete(id=${student.code})}"></a>
+                        <button type="button" class="btn btn-danger" th:onclick="|window.location.href='/student/' + ${student.code} + '/delete'|">Xác nhận</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${message != null}" class="alert alert-success" role="alert" id="message" th:text="${message}"></div>
+</div>
+
+</body>
+<script>
+    setTimeout(function () {
+        let message = document.getElementById("message");
+        if (message) {
+            message.remove();
+        }
+    }, 3000);
+</script>
+</html>
